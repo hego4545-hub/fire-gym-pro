@@ -11,11 +11,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script>
-         
-        }
-    </script>
+
     <style>
+        /* Force SweetAlert to be on top of everything */
+        .swal2-container {
+            z-index: 100000 !important;
+        }
+
         :root { 
             --primary: #c62828; 
             --primary-glow: rgba(198, 40, 40, 0.2);
@@ -194,7 +196,7 @@
         
         header { padding: 40px 20px 20px; background: none; text-align: center; }
         .main-sections { padding: 15px; padding-bottom: 150px; }
-        .content-tab { min-height: calc(100vh - 100px); }
+        .content-tab { min-height: calc(100vh - 100px); padding-bottom: 200px; }
         #app-content { overflow-y: visible !important; }
         
         .btn-full { 
@@ -382,21 +384,35 @@
         .workout-card-input input:focus { border-color: var(--primary) !important; box-shadow: 0 0 15px var(--primary-glow); }
         
         .sub-btn { 
-            padding: 16px !important; 
-            font-size: 15px !important; 
+            padding: 18px 12px !important; 
+            font-size: 13px !important; 
             font-weight: 900 !important; 
             cursor: pointer; 
-            border: 1px solid rgba(255,255,255,0.05) !important; 
-            transition: all 0.3s; 
+            background: rgba(255,255,255,0.03) !important;
+            border: 1px solid rgba(255,255,255,0.08) !important; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
             color: #fff; 
-            border-radius: 18px !important;
+            border-radius: 20px !important;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .sub-btn:hover { background: rgba(255,255,255,0.1) !important; transform: translateY(-2px); }
-        .sub-btn:active { transform: scale(0.96); }
+        .sub-btn span {
+            font-size: 24px;
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.2));
+        }
+        .sub-btn:hover { 
+            background: rgba(255,255,255,0.08) !important; 
+            transform: translateY(-4px);
+            border-color: rgba(255,255,255,0.2) !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+        .sub-btn:active { transform: scale(0.94); }
 
         .menu-item-whatsapp { transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); -webkit-tap-highlight-color: transparent; }
         .menu-item-whatsapp:active { background: rgba(0,0,0,0.08); transform: scale(0.95); }
@@ -475,9 +491,92 @@
         }
         .share-logo-tags { margin-top: 20px; direction: ltr; }
         .share-tags { color: #444; font-size: 9px; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px; }
-        .share-logo { font-weight: 900; color: rgba(255,255,255,0.05); letter-spacing: 5px; font-size: 10px; text-transform: uppercase; }
-        .user-admin-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.15); background: linear-gradient(135deg, #161616, #0a0a0a) !important; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-        .user-admin-card:active { transform: scale(0.97); }
+        /* --- REFINED PREMIUM DASHBOARD --- */
+        .home-hero {
+            padding: 50px 20px 30px;
+            background: linear-gradient(180deg, rgba(198, 40, 40, 0.25) 0%, transparent 100%);
+            border-radius: 0 0 50px 50px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .user-welcome-text {
+            font-size: 42px;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            letter-spacing: -1px;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+        .user-welcome-text span { color: var(--primary); }
+        .fire-icon-main { font-size: 45px; filter: drop-shadow(0 0 15px var(--primary)); }
+        
+        .daily-motivation {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 20px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+        }
+        .daily-motivation p {
+            margin: 0;
+            color: #ccc;
+            font-size: 13px;
+            font-weight: bold;
+            font-style: italic;
+            line-height: 1.5;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 20px;
+            margin-bottom: 25px;
+        }
+        .dash-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            padding: 20px 15px;
+            text-align: center;
+            transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .dash-card:active { transform: scale(0.95); background: rgba(255, 255, 255, 0.08); }
+        .dash-card b {
+            display: block;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        .dash-card span {
+            color: #fff;
+            font-weight: 900;
+            font-size: 14px;
+            display: block;
+        }
+        .dash-card small {
+            color: #666;
+            font-size: 9px;
+            font-weight: bold;
+        }
+
+        .macro-dashboard {
+            margin: 0 20px 25px;
+            background: #0d0d0d;
+            border-radius: 30px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        /* ... existing macro styles remain ... */
+        .macro-bar-bg { width: 100%; height: 5px; background: #222; border-radius: 10px; margin: 6px 0; overflow: hidden; }
+        .macro-bar-fill { height: 100%; border-radius: 10px; transition: 1s ease-out; }
     </style>
 
 </head>
@@ -567,100 +666,175 @@
         <div class="main-sections">
             <!-- 1. تبويب الرئيسية -->
             <div id="user-tab" class="content-tab hidden">
-                <header style="padding: 40px 0 20px; text-align: center; background: none; border-bottom: none; position: relative;">
-                    <!-- جرس الإشعارات (ستايل فيس بوك) -->
-                    <div onclick="openNotifModal()" style="position:absolute; top:30px; left:20px; font-size:26px; cursor:pointer;" id="notif-bell-container">
-                        🔔<span id="notif-badge" class="hidden" style="position:absolute; top:-5px; right:-5px; background:var(--primary); color:#fff; font-size:10px; padding:2px 5px; border-radius:50%; font-weight:bold; min-width:18px; border:2px solid #000;">0</span>
+                <div class="home-hero">
+                    <div onclick="openNotifModal()" style="position:absolute; top:25px; left:25px; font-size:26px; cursor:pointer;" id="notif-bell-container">
+                        🔔<span id="notif-badge" class="hidden" style="position:absolute; top:-5px; right:-5px; background:var(--primary); color:#fff; font-size:9px; padding:2px 6px; border-radius:50%; font-weight:bold; min-width:18px; border:2px solid #000;">0</span>
+                    </div>
+
+                    <div style="display:flex; justify-content:center; margin-bottom:20px;">
+                        <div class="system-pill" id="system-title-badge" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); color:var(--accent); font-size:10px; padding:6px 18px; border-radius:50px; font-weight:900; backdrop-filter:blur(10px);">🔥 V.9.4.0 ELITE</div>
                     </div>
                     
-                    <div style="display:inline-block; font-size:10px; color:var(--accent); font-weight:bold; background:rgba(0,0,0,0.5); padding:4px 15px; border-radius:20px; border:1px solid rgba(255,255,255,0.1); margin-bottom:15px;">V.6.7.2 ELITE 🔥</div>
-                    <h2 style="font-size:36px; font-weight:900; letter-spacing:-1.5px; text-shadow: 0 5px 15px rgba(0,0,0,0.5);">يا كابتن <span id="user-display-name" style="color:var(--primary);">بطلنا</span> 🔥</h2>
+                    <h1 class="user-welcome-text">
+                        <span class="fire-icon-main">🔥</span>
+                        <span id="user-welcome-prefix">يا كابتن</span> <span id="user-display-name">...</span>
+                    </h1>
                     
-                    <!-- ملاحظة الكابتن بتصميم سنمائي تحت الاسم -->
-                    <div id="captain-notes-box" class="hidden" style="margin: 15px auto; max-width: 90%; background: rgba(255,179,0,0.05); border: 1px solid rgba(255,179,0,0.2); border-radius: 20px; padding: 15px; backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: cinematicEntrance 1s ease-out;">
-                        <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:5px;">
-                            <span style="font-size:12px; color:var(--accent); font-weight:bold; text-transform:uppercase; letter-spacing:2px;">Captain's Message</span>
+                    <div class="daily-motivation" id="daily-quote-card" style="max-width:350px; margin:0 auto 25px;">
+                        <p id="daily-quote-text">صحتك هي استثمارك الوحيد اللي مش بيخسر 🔋</p>
+                    </div>
+
+                    <!-- Captain's Pinned Note (Inside Hero for better visibility) -->
+                    <div id="captain-notes-box" style="background: linear-gradient(135deg, rgba(255,179,0,0.15), rgba(0,0,0,0.3)); border: 1px solid rgba(255,179,0,0.3); border-radius: 20px; padding: 15px; position: relative; overflow: hidden; animation: cinematicEntrance 0.8s ease-out; margin-top:10px;">
+                        <div style="position:absolute; top:-5px; right:-5px; font-size:30px; opacity:0.1; transform:rotate(-15deg);">✍️</div>
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
                             <span class="pulse-dot" style="width:6px; height:6px; background:var(--accent); border-radius:50%;"></span>
+                            <span style="font-size:10px; color:var(--accent); font-weight:900; text-transform:uppercase; letter-spacing:1px;">لوحة ملاحظات الكابتن 📋</span>
                         </div>
-                        <p id="captain-notes-text" style="font-size:16px; font-weight:bold; color:#fff; line-height:1.4; text-shadow: 0 2px 4px rgba(0,0,0,0.5); margin:0;"></p>
+                        <p id="captain-notes-text" style="font-size:14px; font-weight:bold; color:#fff; line-height:1.5; margin:0; text-align:right;">استعد لتلقي تعليمات الكابتن هنا.. عاش يا وحش! 🔥</p>
                     </div>
-                </header>
-                <!-- بنر النظام المخصص (تصغير المستطيل) -->
-                <div id="system-banner" style="width:100%; height:130px; border-radius:25px; margin-bottom:20px; background-size:cover; background-position:center; position:relative; overflow:hidden; border:1px solid rgba(255,255,255,0.05); box-shadow:0 10px 25px rgba(0,0,0,0.4);">
-                    <div style="position:absolute; bottom:0; left:0; width:100%; height:100%; background:linear-gradient(90deg, rgba(0,0,0,0.85) 0%, transparent 60%); padding:20px; display:flex; justify-content:flex-end; align-items:center;">
-                        <div style="text-align:right;">
-                            <div id="system-title-badge" style="background:var(--primary); color:#fff; padding:3px 10px; border-radius:8px; font-size:10px; font-weight:900; margin-bottom:5px; display:inline-block; text-transform:uppercase; letter-spacing:1px;"></div>
-                            <h3 id="system-main-title" style="margin:0; font-size:20px; font-weight:900; text-shadow:2px 2px 10px rgba(0,0,0,0.8); color:#fff; letter-spacing: -0.5px;"></h3>
+                </div>
+
+                <!-- Action Dashboard -->
+                <div class="dashboard-grid" id="main-tracker-grid"></div>
+
+                <!-- Macro Dashboard -->
+                <div class="macro-dashboard">
+                    <div class="macro-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                        <h3 style="margin:0; font-size:15px; color:#fff;">التحليل اليومي 📊</h3>
+                        <button onclick="openMacroModal()" style="background:rgba(255,255,255,0.05); border:1px solid #333; color:var(--success); padding:5px 12px; border-radius:12px; font-size:10px; font-weight:bold;">الحاسبة ✨</button>
+                    </div>
+                    <div class="macro-ring-container" style="display:flex; justify-content:space-around; gap:10px;">
+                        <div class="macro-stat">
+                            <b style="color:#ff5252; font-size:16px;" id="dash-prot">--</b>
+                            <div class="macro-bar-bg"><div class="macro-bar-fill" id="bar-prot" style="background:#ff5252; width:0%"></div></div>
+                            <small style="color:#555; font-size:9px;">بروتين</small>
+                        </div>
+                        <div class="macro-stat">
+                            <b style="color:#448aff; font-size:16px;" id="dash-carb">--</b>
+                            <div class="macro-bar-bg"><div class="macro-bar-fill" id="bar-carb" style="background:#448aff; width:0%"></div></div>
+                            <small style="color:#555; font-size:9px;">كارب</small>
+                        </div>
+                        <div class="macro-stat">
+                            <b style="color:#ffb300; font-size:16px;" id="dash-fat">--</b>
+                            <div class="macro-bar-bg"><div class="macro-bar-fill" id="bar-fat" style="background:#ffb300; width:0%"></div></div>
+                            <small style="color:#555; font-size:9px;">دهون</small>
                         </div>
                     </div>
                 </div>
 
-                <div class="card">
-                    <h3>سجل نشاطك 🏃‍♂️</h3>
-                    <div class="tracker-grid" id="main-tracker-grid"></div>
+                <!-- Water Tracker -->
+                <div style="margin: 0 20px 25px; background: linear-gradient(135deg, #0d47a1, #1976d2); border-radius: 25px; padding: 20px; color:#fff; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 8px 20px rgba(13,71,161,0.2);">
+                    <div>
+                        <div style="font-size:11px; font-weight:bold; opacity:0.8; margin-bottom:2px;">تتبع شرب المية 💧</div>
+                        <div style="display:flex; align-items:baseline; gap:5px;">
+                            <span id="water-count" style="font-size:36px; font-weight:900;">0</span>
+                            <small style="font-weight:bold; opacity:0.6; font-size:11px;">أكواب</small>
+                        </div>
+                    </div>
+                    <button onclick="updateWater(1)" style="background:#fff; color:#0d47a1; border:none; width:50px; height:50px; border-radius:15px; font-size:24px; font-weight:bold; transition:0.2s;" class="track-btn">＋</button>
                 </div>
 
-                <div class="card" style="background:linear-gradient(135deg,#1e1e1e,#0d47a1); border:none; box-shadow:0 10px 20px rgba(13,71,161,0.3);">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h3>شرب المية 💧</h3> <span id="water-count" style="font-size:32px; font-weight:900;">0</span>
-                        <button onclick="updateWater(1)" style="background:#fff; color:#000; border:none; padding:12px 25px; border-radius:15px; font-weight:bold; box-shadow:0 5px 15px rgba(255,255,255,0.2);">+1 كوب</button>
-                    </div>
+                <!-- Leaderboard -->
+                <div style="padding: 0 25px 10px; display:flex; justify-content:space-between; align-items:center;">
+                    <h3 style="margin:0; font-size:16px; color:#fff;">لوحة الشرف 🏆</h3>
+                    <a href="javascript:void(0)" onclick="loadHallOfFame()" style="color:var(--accent); font-size:11px; text-decoration:none; font-weight:bold;">الترتيب ←</a>
                 </div>
-
-                <div class="card" style="border-left:5px solid var(--accent);">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h3 id="plan-title-display">جدول تمرينك 🏋️‍♂️</h3>
-                        <small style="color:var(--accent); font-weight:bold;">تحت إشراف الكابتن 👨‍🏫</small>
-                    </div>
-                    
-                    <div id="vip-toggle-container" class="hidden" style="background:#000; padding:5px; border-radius:20px; display:flex; margin:20px 0; border:1px solid #333;">
-                        <button id="btn-show-workout" class="sub-btn" style="flex:1; margin:0; border-radius:15px; background:var(--primary);" onclick="switchVipMode('workout')">🏋️ تمرين</button>
-                        <button id="btn-show-nutrition" class="sub-btn" style="flex:1; margin:0; border-radius:15px; background:transparent; color:#777;" onclick="switchVipMode('nutrition')">🥗 تغذية</button>
-                    </div>
-
-                    <div id="user-plan-tabs" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:15px 0;"></div>
-
-                    <!-- مكان عرض الجدول والزرار الأصفر المفقود -->
-                    <button id="workout-timer-btn" class="btn-full hidden" onclick="toggleWorkoutTimer()" style="background:var(--accent); color:#000; font-weight:bold; font-size:14px; margin-top:10px; margin-bottom:15px; border:none; border-radius:15px; padding:15px; box-shadow: 0 4px 15px rgba(255,179,0,0.3);">⏱️ وقت التمرين: <span id="workout-timer-display">00:00:00</span></button>
-
-                    <div id="user-plan-view" class="hidden">
-                        <div id="plan-cards-container"></div>
-                    </div>
-                </div>
+                <div id="hall-of-fame-list" class="leaderboard-list"></div>
+            </div>
 
 
+                <!-- Premium Macro Modal -->
+                <div id="macro-modal" class="modal hidden" style="z-index: 100000; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); background: rgba(0,0,0,0.85);">
+                    <div class="modal-content" style="max-width:450px; padding:0; overflow:hidden; border-radius:40px; border:1px solid rgba(255,255,255,0.1); background: #080808; box-shadow: 0 40px 100px rgba(0,0,0,0.8);">
+                        <div id="macro-input-view">
+                            <div style="background: linear-gradient(135deg, #1b5e20, #4caf50); padding:40px 30px; text-align:center; position:relative; overflow:hidden;">
+                                <div style="position:absolute; top:-20px; right:-20px; width:150px; height:150px; background:rgba(255,255,255,0.1); border-radius:50%; filter:blur(40px);"></div>
+                                <span onclick="closeMacroModal()" style="position:absolute; top:20px; right:25px; color:#fff; cursor:pointer; font-size:24px; z-index:10; background:rgba(0,0,0,0.2); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;">✕</span>
+                                <div style="font-size:50px; margin-bottom:15px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));">🍎</div>
+                                <h2 style="color:#fff; margin:0; font-size:28px; font-weight:900; letter-spacing:-0.5px;">حاسبة السعرات الذكية</h2>
+                                <p style="color:rgba(255,255,255,0.7); font-size:12px; margin-top:10px; font-weight:bold;">بناءً على معادلة Mifflin-St Jeor العالمية</p>
+                            </div>
+                            
+                            <div style="padding:30px; display:flex; flex-direction:column; gap:25px; background: linear-gradient(to bottom, #080808, #000);">
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+                                    <div class="input-group">
+                                        <label style="color:#777; font-size:12px; margin-bottom:8px; display:block;">العمر</label>
+                                        <input type="number" id="m-age" value="25" style="background:#111; border:1px solid #222; color:#fff; padding:15px; border-radius:18px; width:100%; font-size:16px; font-weight:bold; text-align:center;">
+                                    </div>
+                                    <div class="input-group">
+                                        <label style="color:#777; font-size:12px; margin-bottom:8px; display:block;">النوع</label>
+                                        <select id="m-gender" style="background:#111; border:1px solid #222; color:#fff; padding:15px; border-radius:18px; width:100%; font-size:16px; font-weight:bold; appearance:none;">
+                                            <option value="male">ذكر 👨</option>
+                                            <option value="female">أنثى 👩</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group">
+                                    <label style="color:#777; font-size:12px; margin-bottom:8px; display:block;">مستوى النشاط البدني</label>
+                                    <select id="m-activity" style="background:#111; border:1px solid #222; color:#fff; padding:15px; border-radius:18px; width:100%; font-size:15px; font-weight:bold;">
+                                        <option value="1.2">خامل (بدون تمرين)</option>
+                                        <option value="1.375">نشاط خفيف (1-3 أيام)</option>
+                                        <option value="1.55">نشاط متوسط (3-5 أيام)</option>
+                                        <option value="1.725">نشاط عالي (6-7 أيام)</option>
+                                    </select>
+                                </div>
 
-                <div id="nutrition-extras" class="hidden" style="margin-top:25px;">
-                    <div id="nutrition-nav-buttons" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
-                        <button onclick="toggleNutritionSection('food-prefs-section')" class="btn-full" style="background:rgba(76,175,80,0.1); border:1px solid #4caf50; color:#4caf50; font-size:12px; padding:12px; border-radius:15px; font-weight:bold;">🥗 تفضيلات الأكل</button>
-                        <button onclick="toggleNutritionSection('recipes-section')" class="btn-full" style="background:rgba(255,179,0,0.1); border:1px solid var(--accent); color:var(--accent); font-size:12px; padding:12px; border-radius:15px; font-weight:bold;">👨‍🍳 وصفات أون فاير</button>
-                    </div>
+                                <div class="input-group">
+                                    <label style="color:#777; font-size:12px; margin-bottom:12px; display:block;">هدفك الحالي</label>
+                                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+                                        <button class="sub-btn m-goal-btn" onclick="setMacroGoal('cut', this)" style="background:#4caf50; color:#fff; padding:12px; border-radius:15px; border:none; font-size:12px; font-weight:bold; transition:0.3s;">تنشيف 🔥</button>
+                                        <button class="sub-btn m-goal-btn" onclick="setMacroGoal('maintain', this)" style="background:rgba(255,255,255,0.05); color:#777; padding:12px; border-radius:15px; border:1px solid #222; font-size:12px; font-weight:bold; transition:0.3s;">ثبات ⚖️</button>
+                                        <button class="sub-btn m-goal-btn" onclick="setMacroGoal('bulk', this)" style="background:rgba(255,255,255,0.05); color:#777; padding:12px; border-radius:15px; border:1px solid #222; font-size:12px; font-weight:bold; transition:0.3s;">تضخيم 💪</button>
+                                    </div>
+                                </div>
 
-                    <div id="food-prefs-section" class="card hidden" style="border-top:4px solid #4caf50; background:rgba(0,0,0,0.4);">
-                        <h3 style="color:#4caf50; display:flex; align-items:center; gap:10px; margin-bottom:15px;">🥗 جدول تفضيلات الأكل</h3>
-                        <p style="font-size:11px; color:#777; margin-bottom:15px;">اكتب هنا الأكلات اللي بتحبها (❤️) واللي مش بتحبها (💔) عشان الكابتن يراعيها في نظامك الدايت.</p>
-                        
-                        <div style="overflow-x:auto;">
-                            <table style="width:100%; border-collapse:collapse; background:rgba(255,255,255,0.02); border-radius:12px; overflow:hidden; border:1px solid #333;">
-                                <thead style="background:#111; font-size:11px; color:#555;">
-                                    <tr>
-                                        <th style="padding:12px; text-align:right;">الأكلة / الصنف</th>
-                                        <th style="padding:12px; width:70px;">الحالة</th>
-                                        <th style="padding:12px; width:40px;">حذف</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="food-prefs-body"></tbody>
-                            </table>
+                                <button class="btn-full pulse-glow" onclick="performMacroCalc()" style="background:linear-gradient(135deg, #2e7d32, #1b5e20); color:#fff; padding:20px; border-radius:20px; font-size:18px; font-weight:900; margin-top:10px; border:none; box-shadow:0 15px 30px rgba(46,125,50,0.3);">احسب احتياجي الآن 🚀</button>
+                            </div>
                         </div>
 
-                        <button class="btn-full" onclick="addPrefRow()" style="background:#222; border:1px dashed #444; color:#777; margin-top:15px; padding:12px; font-size:13px;">+ إضافة صنف جديد</button>
-                        <button class="btn-full" onclick="saveFoodPrefs()" style="background:var(--success); color:#000; margin-top:15px; font-weight:bold; font-size:17px; box-shadow: 0 4px 15px rgba(76,175,80,0.3);">✅ حفظ الجدول للكابتن</button>
-                    </div>
-                    <div id="recipes-section" class="card hidden" style="border-top:4px solid var(--accent); background:rgba(0,0,0,0.4);">
-                        <h3 style="color:var(--accent); display:flex; align-items:center; gap:10px; margin-bottom:15px;">👨‍🍳 وصفات أون فاير 🔥</h3>
-                        <div id="recipes-gallery" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:15px;"></div>
+                        <!-- Result View -->
+                        <div id="macro-result-view" class="hidden">
+                            <div style="background: linear-gradient(135deg, #1b5e20, #4caf50); padding:40px 30px; text-align:center; position:relative;">
+                                <span onclick="closeMacroModal()" style="position:absolute; top:20px; right:25px; color:#fff; cursor:pointer; font-size:24px; background:rgba(0,0,0,0.2); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;">✕</span>
+                                <h2 style="color:#fff; margin:0; font-size:28px; font-weight:900;">النتائج النهائية 📊</h2>
+                                <p style="color:rgba(255,255,255,0.7); font-size:12px; margin-top:10px;">خطة التغذية المقترحة لك</p>
+                            </div>
+                            
+                            <div style="padding:35px; text-align:center; background:#000;">
+                                <div style="background:rgba(76,175,80,0.05); padding:30px; border-radius:30px; border:1px solid rgba(76,175,80,0.1); margin-bottom:30px; position:relative;">
+                                    <p style="color:#777; margin-bottom:10px; font-size:14px; font-weight:bold; text-transform:uppercase; letter-spacing:1px;">السعرات الحرارية اليومية</p>
+                                    <h1 id="res-calories" style="font-size:75px; color:#4caf50; margin:0; font-weight:900; letter-spacing:-2px; text-shadow:0 0 30px rgba(76,175,80,0.3);">0</h1>
+                                    <p style="color:#4caf50; font-weight:bold; font-size:16px;">سعرة حرارية</p>
+                                </div>
+                                
+                                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:40px;">
+                                    <div style="background:#0a0a0a; padding:20px 10px; border-radius:20px; border:1px solid #1a1a1a; border-top:4px solid #ff5252;">
+                                        <small style="color:#555; display:block; margin-bottom:8px; font-size:10px; font-weight:bold;">بروتين</small>
+                                        <b id="res-prot" style="font-size:22px; color:#fff; font-weight:900;">0g</b>
+                                    </div>
+                                    <div style="background:#0a0a0a; padding:20px 10px; border-radius:20px; border:1px solid #1a1a1a; border-top:4px solid #448aff;">
+                                        <small style="color:#555; display:block; margin-bottom:8px; font-size:10px; font-weight:bold;">كربوهيدرات</small>
+                                        <b id="res-carb" style="font-size:22px; color:#fff; font-weight:900;">0g</b>
+                                    </div>
+                                    <div style="background:#0a0a0a; padding:20px 10px; border-radius:20px; border:1px solid #1a1a1a; border-top:4px solid #ffb300;">
+                                        <small style="color:#555; display:block; margin-bottom:8px; font-size:10px; font-weight:bold;">دهون</small>
+                                        <b id="res-fat" style="font-size:22px; color:#fff; font-weight:900;">0g</b>
+                                    </div>
+                                </div>
+
+                                <button class="btn-full" onclick="resetMacroCalc()" style="background:rgba(255,255,255,0.05); border:1px solid #222; color:#555; font-size:13px; font-weight:bold; border-radius:20px; padding:15px;">إعادة الحساب 🔄</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+
+
+
+
+
             </div>
 
             <!-- تبويب تقييمي -->
@@ -753,31 +927,47 @@
 
                 <div class="card" style="margin-top:20px; border-right:5px solid var(--accent);">
                     <h3 style="margin-bottom:20px; display:flex; align-items:center; gap:10px;">📊 نظرة عامة على الجيم <span style="font-size:12px; font-weight:normal; color:var(--text-muted);">(تحديث لحظي)</span></h3>
-                <div class="tracker-grid" style="grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:25px;">
+                <div class="tracker-grid" style="grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:25px;">
                     <!-- إجمالي المشتركين -->
-                    <div class="track-btn" style="padding:15px; border-radius:20px; position:relative; background:rgba(255,255,255,0.03);">
-                        <b id="stat-total-val" style="font-size:24px; color:#fff;">0</b>
-                        <span style="font-size:10px; color:#aaa;">عدد المشتركين 👥</span>
+                    <div class="track-btn" style="padding:20px; border-radius:24px; position:relative; background:linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%); border:1px solid rgba(255,255,255,0.05); overflow:hidden; transition:0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                        <div style="position:absolute; top:-10px; right:-10px; font-size:60px; opacity:0.05; transform:rotate(-15deg);">👥</div>
+                        <div style="display:flex; flex-direction:column; gap:5px;">
+                            <span style="font-size:11px; color:#777; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">إجمالي الأبطال</span>
+                            <b id="stat-total-val" style="font-size:32px; color:#fff; font-weight:900; line-height:1;">0</b>
+                        </div>
+                        <div style="height:4px; width:40%; background:var(--primary); border-radius:10px; margin-top:15px; box-shadow:0 0 10px var(--primary-glow);"></div>
                     </div>
                     
                     <!-- طلبات الانضمام -->
-                    <div class="track-btn" style="padding:15px; border-radius:20px; position:relative; cursor:pointer; background:rgba(255,255,255,0.03);" onclick="document.getElementById('pending-requests-modal').classList.remove('hidden')">
-                        <b id="stat-pending-val" style="font-size:24px; color:var(--primary);">0</b>
-                        <span style="font-size:10px; color:#aaa;">طلبات انضمام 🆕</span>
-                        <div id="dot-pending" class="notif-dot hidden" style="position:absolute; top:12px; right:12px; width:10px; height:10px; background:#ff3b30; border-radius:50%; box-shadow:0 0 10px #ff3b30;"></div>
+                    <div class="track-btn" style="padding:20px; border-radius:24px; position:relative; cursor:pointer; background:linear-gradient(135deg, rgba(198,40,40,0.1) 0%, rgba(0,0,0,0.2) 100%); border:1px solid rgba(198,40,40,0.2); overflow:hidden; transition:0.3s; box-shadow: 0 10px 30px rgba(198,40,40,0.1);" onclick="document.getElementById('pending-requests-modal').classList.remove('hidden')">
+                        <div style="position:absolute; top:-10px; right:-10px; font-size:60px; opacity:0.1; transform:rotate(-15deg);">🆕</div>
+                        <div style="display:flex; flex-direction:column; gap:5px;">
+                            <span style="font-size:11px; color:var(--primary); font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">طلبات انضمام</span>
+                            <b id="stat-pending-val" style="font-size:32px; color:#fff; font-weight:900; line-height:1;">0</b>
+                        </div>
+                        <div id="dot-pending" class="notif-dot hidden" style="position:absolute; top:20px; right:20px; width:12px; height:12px; background:#ff3b30; border-radius:50%; box-shadow:0 0 15px #ff3b30; border:2px solid #000;"></div>
+                        <div style="height:4px; width:60%; background:var(--primary); border-radius:10px; margin-top:15px; opacity:0.3;"></div>
                     </div>
 
                     <!-- اشتراكات منتهية -->
-                    <div class="track-btn" style="padding:15px; border-radius:20px; position:relative; background:rgba(255,255,255,0.03);">
-                        <b id="stat-expired-val" style="font-size:24px; color:#ff3b30;">0</b>
-                        <span style="font-size:10px; color:#aaa;">اشتراكات منتهية ⚠️</span>
+                    <div class="track-btn" style="padding:20px; border-radius:24px; position:relative; background:linear-gradient(135deg, rgba(255,59,48,0.05) 0%, rgba(0,0,0,0.2) 100%); border:1px solid rgba(255,59,48,0.1); overflow:hidden; transition:0.3s;">
+                        <div style="position:absolute; top:-10px; right:-10px; font-size:60px; opacity:0.05; transform:rotate(-15deg);">⚠️</div>
+                        <div style="display:flex; flex-direction:column; gap:5px;">
+                            <span style="font-size:11px; color:#ff3b30; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">اشتراكات منتهية</span>
+                            <b id="stat-expired-val" style="font-size:32px; color:#fff; font-weight:900; line-height:1;">0</b>
+                        </div>
+                        <div style="height:4px; width:20%; background:#ff3b30; border-radius:10px; margin-top:15px; opacity:0.5;"></div>
                     </div>
 
                     <!-- طلبات تغيير النظام -->
-                    <div class="track-btn" style="padding:15px; border-radius:20px; position:relative; cursor:pointer; background:rgba(255,255,255,0.03);" onclick="document.getElementById('goal-change-modal').classList.remove('hidden')">
-                        <b id="stat-goals-val" style="font-size:24px; color:var(--accent);">0</b>
-                        <span style="font-size:10px; color:#aaa;">تغيير نظام 🚀</span>
-                        <div id="dot-goals" class="notif-dot hidden" style="position:absolute; top:12px; right:12px; width:10px; height:10px; background:#ffb300; border-radius:50%; box-shadow:0 0 10px #ffb300;"></div>
+                    <div class="track-btn" style="padding:20px; border-radius:24px; position:relative; cursor:pointer; background:linear-gradient(135deg, rgba(255,179,0,0.05) 0%, rgba(0,0,0,0.2) 100%); border:1px solid rgba(255,179,0,0.1); overflow:hidden; transition:0.3s;" onclick="document.getElementById('goal-change-modal').classList.remove('hidden')">
+                        <div style="position:absolute; top:-10px; right:-10px; font-size:60px; opacity:0.05; transform:rotate(-15deg);">🚀</div>
+                        <div style="display:flex; flex-direction:column; gap:5px;">
+                            <span style="font-size:11px; color:var(--accent); font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">طلبات تغيير نظام</span>
+                            <b id="stat-goals-val" style="font-size:32px; color:#fff; font-weight:900; line-height:1;">0</b>
+                        </div>
+                        <div id="dot-goals" class="notif-dot hidden" style="position:absolute; top:20px; right:20px; width:12px; height:12px; background:#ffb300; border-radius:50%; box-shadow:0 0 15px #ffb300; border:2px solid #000;"></div>
+                        <div style="height:4px; width:30%; background:var(--accent); border-radius:10px; margin-top:15px; opacity:0.5;"></div>
                     </div>
                 </div>
             </div>
@@ -803,15 +993,71 @@
                     <div class="input-group" style="margin: 10px 0 20px;">
                         <input type="tel" id="admin-search-phone" placeholder="🔍 ابحث برقم الموبايل..." oninput="filterAdminUsers()" style="border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 15px; width: 100%; color: #fff; outline: none; transition: 0.3s;">
                     </div>
-                    <div id="admin-user-filters" style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:20px;">
-                        <button class="sub-btn" style="background:var(--primary); font-size:9px; padding:10px 2px;" onclick="filterAdminUsers('all')">الكل</button>
-                        <button class="sub-btn" style="background:#222; font-size:9px; padding:10px 2px;" onclick="filterAdminUsers('نظام تدريب')">تدريب</button>
-                        <button class="sub-btn" style="background:#222; font-size:9px; padding:10px 2px;" onclick="filterAdminUsers('نظام تغذيه')">تغذية</button>
-                        <button class="sub-btn" style="background:#222; font-size:9px; padding:10px 2px;" onclick="filterAdminUsers('نظام تدريب + تغذيه')">مكس 🔄</button>
-                        <button class="sub-btn" style="background:#222; font-size:9px; padding:10px 2px;" onclick="filterAdminUsers('نظام VIP')">VIP</button>
-                        <button class="sub-btn" style="background:#ff3b30; font-size:9px; padding:10px 2px;" onclick="filterAdminUsers('expired')">المنتهي ⌛</button>
+                    <div id="admin-user-filters" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; justify-content: center;">
+                        <!-- Filters will be rendered dynamically with counts -->
                     </div>
                     <div id="all-users-list"></div>
+                    <div style="height: 150px;"></div> <!-- مساحة أمان إضافية للسكرول -->
+                </div>
+            </div>
+
+            <!-- تبويب جدول التمرين العالمي الجديد -->
+            <div id="workout-schedule-tab" class="content-tab hidden">
+                <div class="card" style="padding:0; background:transparent; border:none; box-shadow:none; margin-bottom:30px;">
+                    <div style="text-align:center; margin-bottom:25px;">
+                        <h2 id="schedule-main-title" style="font-size:32px; font-weight:900; color:#fff;">جدول <span style="color:var(--primary);">الأبطال</span> 📋</h2>
+                        <p style="color:#777; font-size:12px;">اختر نظامك اليومي وتابع تطورك</p>
+                            <!-- Dual Timer Control Panel -->
+
+                    </div>
+
+                    <!-- Premium Segmented Control -->
+                    <div style="background:rgba(255,255,255,0.03); padding:6px; border-radius:25px; display:flex; margin:0 auto 30px; border:1px solid rgba(255,255,255,0.05); width:90%; max-width:400px; position:relative; backdrop-filter:blur(10px);">
+                        <div id="tab-slider-bg" style="position:absolute; top:6px; left:6px; width:calc(50% - 6px); height:calc(100% - 12px); background:var(--primary); border-radius:20px; transition:0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index:0; box-shadow:0 10px 20px var(--primary-glow);"></div>
+                        <button id="btn-schedule-workout" onclick="switchScheduleView('workout', this)" style="flex:1; background:transparent; border:none; color:#fff; padding:15px; border-radius:20px; font-weight:900; font-size:15px; cursor:pointer; position:relative; z-index:1; transition:0.3s;">🏋️ تمرين</button>
+                        <button id="btn-schedule-nutrition" onclick="switchScheduleView('nutrition', this)" style="flex:1; background:transparent; border:none; color:#777; padding:15px; border-radius:20px; font-weight:900; font-size:15px; cursor:pointer; position:relative; z-index:1; transition:0.3s;">🥗 تغذية</button>
+                    </div>
+
+                    <div id="schedule-tab-content">
+                        <!-- Workout Content -->
+                        <div id="schedule-workout-view">
+                            <div class="card" style="border-left:5px solid var(--accent);">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                                    <h3 id="workout-inner-title" style="margin:0;">جدول تمارينك اليومي 🏋️‍♂️</h3>
+                                    <small style="color:var(--accent); font-weight:bold;">تحت إشراف الكابتن 👨‍🏫</small>
+                                </div>
+                                <div id="schedule-workout-tabs" style="display:flex; flex-direction:column; gap:12px; margin:15px 0;"></div>
+                                
+                                <!-- المجموعة الأساسية للمؤقت -->
+                                <div id="workout-timer-container" class="hidden" style="margin-bottom:20px; display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
+                                    <button id="workout-timer-btn" onclick="toggleWorkoutTimer()" style="background: linear-gradient(135deg, var(--accent), #ff8f00); color:#000; font-weight:900; font-size:12px; border:none; border-radius:20px; padding:12px 20px; box-shadow: 0 5px 15px rgba(255,179,0,0.2); cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:0.3s; border:1px solid rgba(255,255,255,0.1);">
+                                        <span style="font-size:16px;">⏱️</span>
+                                        <span>التمرين: <span id="workout-timer-display">00:00:00</span></span>
+                                    </button>
+                                    <button id="rest-timer-btn" onclick="startRestTimer(60)" style="background: rgba(255,255,255,0.05); color:#fff; font-weight:bold; font-size:12px; border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:12px 20px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:0.3s; backdrop-filter:blur(10px);">
+                                        <span style="font-size:16px;">⏳</span>
+                                        <span>راحة (60ث)</span>
+                                    </button>
+                                </div>
+                                
+
+
+                                <div id="schedule-workout-container"></div>
+                            </div>
+                        </div>
+
+                        <!-- Nutrition Content -->
+                        <div id="schedule-nutrition-view" class="hidden">
+                            <div class="card" style="border-left:5px solid #4caf50;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                                    <h3 style="margin:0;">نظامك الغذائي الذكي 🥗</h3>
+                                    <small style="color:#4caf50; font-weight:bold;">تغذية الأبطال 🍎</small>
+                                </div>
+                                <div id="schedule-nutrition-tabs" style="display:flex; flex-direction:column; gap:12px; margin:15px 0;"></div>
+                                <div id="schedule-nutrition-container"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -849,6 +1095,7 @@
 
         <div class="bottom-tabs hidden" id="bottom-nav-bar">
             <a href="javascript:void(0)" id="home-tab-nav" class="tab active" onclick="switchTab('user', this)"><span>🏋️‍♂️</span>الرئيسية</a>
+            <a href="javascript:void(0)" id="schedule-nav" class="tab" onclick="switchTab('workout-schedule', this)"><span>📋</span>جدول تمرينك اليومي</a>
             <a href="javascript:void(0)" class="tab" onclick="switchTab('technique', this)"><span>🎥</span>التكنيك</a>
             <a href="javascript:void(0)" id="history-tab-nav" class="tab" onclick="switchTab('history', this)"><span>📝</span>السجل</a>
             <a href="javascript:void(0)" class="tab" id="more-nav" onclick="toggleMoreMenu()"><span>🎒</span>المزيد</a>
@@ -861,83 +1108,207 @@
         </div>
     </div>
 
-    <div id="more-menu-overlay" class="modal hidden" style="background:rgba(0,0,0,0.2); backdrop-filter:blur(2px); transition: 0.3s; z-index:10001;" onclick="toggleMoreMenu()">
-        <div id="more-menu-content" style="position:fixed; bottom:-100%; left:20px; width:260px; border-radius:25px; padding:10px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); background:rgba(255,255,255,0.98); border:1px solid #eee; box-shadow:0 15px 40px rgba(0,0,0,0.2); max-height:70vh; overflow-y:auto; scrollbar-width: none; -ms-overflow-style: none;" onclick="event.stopPropagation()">
-            <!-- Hidden Scrollbar Hack -->
-            <style>#more-menu-content::-webkit-scrollbar { display: none; }</style>
-            <!-- Hidden Scrollbar Hack -->
-            <style>#more-menu-content::-webkit-scrollbar { display: none; }</style>
+    <div id="more-menu-overlay" class="modal hidden" style="background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); transition: 0.3s; z-index:10001;" onclick="toggleMoreMenu()">
+        <div id="more-menu-content" style="position:fixed; bottom:-100%; left:20px; right:20px; width:calc(100% - 40px); max-width:400px; margin:0 auto; border-radius:35px 35px 25px 25px; padding:15px; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); background:rgba(15, 15, 15, 0.98); border:1px solid rgba(255,255,255,0.05); box-shadow:0 25px 50px rgba(0,0,0,0.5); max-height:80vh; overflow-y:auto; scrollbar-width: none; -ms-overflow-style: none;" onclick="event.stopPropagation()">
+            <style>
+                #more-menu-content::-webkit-scrollbar { display: none; }
+                .menu-item-universal {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    padding: 14px 18px;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    transition: 0.2s;
+                    background: rgba(255,255,255,0.02);
+                    margin-bottom: 8px;
+                    border: 1px solid rgba(255,255,255,0.03);
+                }
+                .menu-item-universal:active {
+                    transform: scale(0.96);
+                    background: rgba(255,255,255,0.05);
+                }
+                .menu-icon-box {
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 14px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    flex-shrink: 0;
+                    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+                }
+            </style>
             
-            <div style="width:40px; height:5px; background:#ddd; border-radius:10px; margin:0 auto 20px auto;"></div>
+            <div style="width:50px; height:6px; background:rgba(255,255,255,0.1); border-radius:10px; margin:5px auto 25px auto;"></div>
             
-            <div style="display:flex; flex-direction:column; gap:5px; padding:10px;">
+            <div style="display:flex; flex-direction:column; padding:5px;">
                 <!-- بياناتي الشخصية (أنا) -->
-                <div onclick="switchTab('me'); toggleMoreMenu();" style="display:flex; align-items:center; gap:15px; padding:12px; border-radius:15px; cursor:pointer;" class="menu-item-whatsapp">
-                    <div style="background:#2196f3; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 10px rgba(33,150,243,0.3);">👤</div>
-                    <b style="color:#333; font-size:15px; flex:1; text-align:right;">بياناتي الشخصية (أنا)</b>
+                <div onclick="switchTab('me'); toggleMoreMenu();" class="menu-item-universal">
+                    <div class="menu-icon-box" style="background:linear-gradient(135deg, #007aff, #0051a8);">👤</div>
+                    <div style="flex:1; text-align:right;">
+                        <b style="color:#fff; font-size:15px; display:block;">الملف الشخصي</b>
+                        <span style="color:#666; font-size:10px;">بياناتك وأوزانك (أنا)</span>
+                    </div>
+                    <span style="color:#333; font-size:12px;">◀</span>
                 </div>
 
                 <!-- التقييم الأسبوعي (تقييم) -->
-                <div onclick="switchTab('eval'); toggleMoreMenu();" style="display:flex; align-items:center; gap:15px; padding:12px; border-radius:15px; cursor:pointer;" class="menu-item-whatsapp">
-                    <div style="background:#4caf50; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 10px rgba(76,175,80,0.3);">📈</div>
-                    <b style="color:#333; font-size:15px; flex:1; text-align:right;">تقييمي الأسبوعي (تقييم)</b>
+                <div onclick="switchTab('eval'); toggleMoreMenu();" class="menu-item-universal">
+                    <div class="menu-icon-box" style="background:linear-gradient(135deg, #34c759, #1e8536);">📈</div>
+                    <div style="flex:1; text-align:right;">
+                        <b style="color:#fff; font-size:15px; display:block;">التقييم الأسبوعي</b>
+                        <span style="color:#666; font-size:10px;">تطور مستواك (تقييم)</span>
+                    </div>
+                    <span style="color:#333; font-size:12px;">◀</span>
                 </div>
 
-                <!-- معلومات تهمك -->
-                <div onclick="openInfoBank(); toggleMoreMenu();" style="display:flex; align-items:center; gap:15px; padding:12px; border-radius:15px; cursor:pointer;" class="menu-item-whatsapp">
-                    <div style="background:#ffb300; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 10px rgba(255,179,0,0.3);">💡</div>
-                    <b style="color:#333; font-size:15px; flex:1; text-align:right;">معلومات تهمك</b>
+                <!-- بنك المعلومات -->
+                <div onclick="openInfoBank(); toggleMoreMenu();" class="menu-item-universal">
+                    <div class="menu-icon-box" style="background:linear-gradient(135deg, #ffb300, #c68a00);">💡</div>
+                    <div style="flex:1; text-align:right;">
+                        <b style="color:#fff; font-size:15px; display:block;">بنك المعلومات</b>
+                        <span style="color:#666; font-size:10px;">نصائح ومعلومات تهمك</span>
+                    </div>
+                    <span style="color:#333; font-size:12px;">◀</span>
                 </div>
+
+                <div style="height:1px; background:rgba(255,255,255,0.05); margin:15px 10px;"></div>
+
+                <!-- قسم التغذية الجديد -->
+                <div id="food-prefs-menu-btn" onclick="openModal('food-prefs-modal'); loadFoodPrefs(); toggleMoreMenu();" class="menu-item-universal">
+                    <div class="menu-icon-box" style="background:linear-gradient(135deg, #4caf50, #2e7d32);">🍲</div>
+                    <div style="flex:1; text-align:right;">
+                        <b style="color:#fff; font-size:15px; display:block;">تفضيلات الأكل</b>
+                        <span style="color:#666; font-size:10px;">بتحب إيه ومش بتحب إيه؟</span>
+                    </div>
+                    <span style="color:#333; font-size:12px;">◀</span>
+                </div>
+
+                <div onclick="openModal('recipes-modal'); loadRecipes(); toggleMoreMenu();" class="menu-item-universal">
+                    <div class="menu-icon-box" style="background:linear-gradient(135deg, #ff9800, #e65100);">👨‍🍳</div>
+                    <div style="flex:1; text-align:right;">
+                        <b style="color:#fff; font-size:15px; display:block;">وصفات أون فاير</b>
+                        <span style="color:#666; font-size:10px;">أكلات دايت احترافية</span>
+                    </div>
+                    <span style="color:#333; font-size:12px;">◀</span>
+                </div>
+
+                <div style="height:1px; background:rgba(255,255,255,0.05); margin:15px 10px;"></div>
 
                 <!-- إدارة بنك المعلومات (للأدمن فقط) -->
-                <div id="admin-info-menu-btn" class="hidden" onclick="document.getElementById('admin-info-modal').classList.remove('hidden'); toggleMoreMenu();" style="display:flex; align-items:center; gap:15px; padding:12px; border-radius:15px; cursor:pointer;" class="menu-item-whatsapp">
-                    <div style="background:#9c27b0; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 10px rgba(156,39,176,0.3);">📚</div>
-                    <b style="color:#333; font-size:15px; flex:1; text-align:right;">إدارة المعلومات</b>
+                <div id="admin-info-menu-btn" class="hidden" onclick="document.getElementById('admin-info-modal').classList.remove('hidden'); toggleMoreMenu();" class="menu-item-universal">
+                    <div class="menu-icon-box" style="background:linear-gradient(135deg, #af52de, #5e2490);">📚</div>
+                    <div style="flex:1; text-align:right;">
+                        <b style="color:#fff; font-size:15px; display:block;">إدارة المعلومات</b>
+                        <span style="color:#666; font-size:10px;">تعديل نصائح البنك (أدمن)</span>
+                    </div>
+                    <span style="color:#333; font-size:12px;">◀</span>
                 </div>
 
                 <!-- تواصل مع كابتن (WhatsApp) -->
-                <a href="https://wa.me/201100896637" target="_blank" style="text-decoration:none; display:flex; align-items:center; gap:15px; padding:12px; border-radius:15px; cursor:pointer;" class="menu-item-whatsapp">
-                    <div style="background:#25d366; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 4px 10px rgba(37,211,102,0.3);">💬</div>
-                    <b style="color:#333; font-size:15px; flex:1; text-align:right;">تواصل مع كابتن (WhatsApp)</b>
+                <a href="https://wa.me/201100896637" target="_blank" style="text-decoration:none;" class="menu-item-universal">
+                    <div class="menu-icon-box" style="background:linear-gradient(135deg, #25d366, #128c7e);">💬</div>
+                    <div style="flex:1; text-align:right;">
+                        <b style="color:#fff; font-size:15px; display:block;">تواصل مع الكابتن</b>
+                        <span style="color:#666; font-size:10px;">واتساب (مباشر)</span>
+                    </div>
+                    <span style="color:#333; font-size:12px;">◀</span>
                 </a>
 
                 <!-- خروج من الأبلكيشن -->
-                <div onclick="fireGymChangePass(); toggleMoreMenu();" style="display:flex; align-items:center; gap:15px; padding:12px; border-radius:15px; cursor:pointer;" class="menu-item-whatsapp">
-                    <div style="background:#ffb300; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 10px rgba(255,179,0,0.3);">🔑</div>
-                    <b style="color:#333; font-size:15px; flex:1; text-align:right;">تغير كلمة السر</b>
+                <div onclick="fireGymChangePass(); toggleMoreMenu();" class="menu-item-universal">
+                    <div class="menu-icon-box" style="background:linear-gradient(135deg, #ffb300, #c68a00);">🔑</div>
+                    <div style="flex:1; text-align:right;">
+                        <b style="color:#fff; font-size:15px; display:block;">تغيير كلمة السر</b>
+                        <span style="color:#666; font-size:10px;">تحديث بيانات الدخول</span>
+                    </div>
+                    <span style="color:#333; font-size:12px;">◀</span>
                 </div>
 
-                <div onclick="logout()" style="display:flex; align-items:center; gap:15px; padding:12px; border-radius:15px; cursor:pointer;" class="menu-item-whatsapp">
-                    <div style="background:#ff3b30; width:45px; height:45px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 10px rgba(255,59,48,0.3);">🚪</div>
-                    <b style="color:#ff3b30; font-size:15px; flex:1; text-align:right;">خروج من الأبلكيشن</b>
+                <div onclick="logout()" class="menu-item-universal" style="background:rgba(255,59,48,0.05); border-color:rgba(255,59,48,0.1);">
+                    <div class="menu-icon-box" style="background:linear-gradient(135deg, #ff3b30, #b20a00);">🚪</div>
+                    <div style="flex:1; text-align:right;">
+                        <b style="color:#ff3b30; font-size:15px; display:block;">تسجيل الخروج</b>
+                        <span style="color:rgba(255,59,48,0.5); font-size:10px;">الخروج من الحساب</span>
+                    </div>
+                    <span style="color:#333; font-size:12px;">◀</span>
                 </div>
 
-                <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-
-                <div style="text-align:center; padding:10px;">
-                    <p style="font-size:10px; color:#999; margin:0;">FIRE GYM PRO V2 Elite V.7.1.3</p>
+                <div style="text-align:center; padding:20px 10px 10px;">
+                    <p style="font-size:10px; color:#333; margin:0; font-weight:bold; letter-spacing:1px;">FIRE GYM PRO V2 <span style="color:var(--primary);">ELITE Edition</span></p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Modals -->
-    <div id="logger-modal" class="modal hidden">
-        <div class="card" style="width:100%; max-width:400px; max-height:90vh; overflow-y:auto;">
-            <h3 id="logger-title" style="margin-bottom:15px; color:var(--accent);">تسجيل</h3>
-            <div id="category-menu" class="hidden"><div id="category-btns" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div></div>
-            <div id="log-inputs" class="hidden">
-                <div id="file-wrapper" class="hidden">
-                    <button class="btn-full" onclick="document.getElementById('log-file').click()" style="background:#333;">📸 التقاط صورة</button>
-                    <input type="file" id="log-file" accept="image/*" capture="environment" class="hidden" onchange="handleImageProcessing(this)">
-                    <img id="img-preview" class="hidden" style="width:100%; border-radius:15px; margin:15px 0;">
-                </div>
-                <input type="text" id="log-val" placeholder="اكتب القيمة..." style="width:100%; padding:14px; background:#111; border:1px solid #333; color:#fff; border-radius:12px; margin-bottom:10px;">
-                <textarea id="log-note" placeholder="ملاحظة..." style="width:100%; height:80px; padding:14px; background:#111; border:1px solid #333; color:#fff; border-radius:12px; margin-bottom:15px;"></textarea>
-                <div id="save-status" style="text-align:center; color:var(--accent); margin-bottom:10px;"></div>
-                <button class="btn-full" onclick="saveLog()">تأكيد وحفظ ✅</button>
+    
+    <!-- Food Preferences Modal -->
+    <div id="food-prefs-modal" class="modal hidden" style="z-index: 10020;">
+        <div class="card" style="width:95%; max-width:500px; padding:25px; background:#0a0a0a; border:1px solid #333; max-height:85vh; overflow-y:auto; border-radius:30px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:#4caf50; margin:0; display:flex; align-items:center; gap:10px;">🥗 تفضيلات الأكل</h3>
+                <button onclick="document.getElementById('food-prefs-modal').classList.add('hidden')" style="background:#222; border:none; color:#fff; width:35px; height:35px; border-radius:50%;">✕</button>
             </div>
-            <button class="btn-full" style="background:#444;" onclick="closeLogger()">إلغاء</button>
+            <p style="font-size:11px; color:#777; margin-bottom:15px;">اكتب هنا الأكلات اللي بتحبها (❤️) واللي مش بتحبها (💔) عشان الكابتن يراعيها في نظامك الدايت.</p>
+            
+            <div style="overflow-x:auto;">
+                <table style="width:100%; border-collapse:collapse; background:rgba(255,255,255,0.02); border-radius:12px; overflow:hidden; border:1px solid #333;">
+                    <thead style="background:#111; font-size:11px; color:#555;">
+                        <tr>
+                            <th style="padding:12px; text-align:right;">الأكلة / الصنف</th>
+                            <th style="padding:12px; width:70px;">الحالة</th>
+                            <th style="padding:12px; width:40px;">حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody id="food-prefs-body"></tbody>
+                </table>
+            </div>
+
+            <button class="btn-full" onclick="addPrefRow()" style="background:#222; border:1px dashed #444; color:#777; margin-top:15px; padding:12px; font-size:13px;">+ إضافة صنف جديد</button>
+            <button class="btn-full" onclick="saveFoodPrefs()" style="background:var(--success); color:#000; margin-top:15px; font-weight:bold; font-size:17px; box-shadow: 0 4px 15px rgba(76,175,80,0.3);">✅ حفظ الجدول للكابتن</button>
+        </div>
+    </div>
+
+    <div id="recipes-modal" class="modal hidden" style="z-index: 10020;">
+        <div class="card" style="width:98%; max-width:1000px; padding:25px; background:#0a0a0a; border:1px solid #333; height:90vh; overflow-y:auto; border-radius:30px; display:flex; flex-direction:column;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:var(--accent); margin:0; display:flex; align-items:center; gap:10px;">👨‍🍳 وصفات أون فاير 🔥</h3>
+                <button onclick="document.getElementById('recipes-modal').classList.add('hidden')" style="background:#222; border:none; color:#fff; width:35px; height:35px; border-radius:50%;">✕</button>
+            </div>
+            <div id="recipes-gallery" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:15px; margin-top:15px; flex:1;"></div>
+        </div>
+    </div>
+
+    <div id="logger-modal" class="modal hidden" style="backdrop-filter: blur(15px); background: rgba(0,0,0,0.7);">
+        <div class="card" style="width:95%; max-width:420px; max-height:90vh; overflow-y:auto; border-radius:30px; border:1px solid rgba(255,255,255,0.1); background: linear-gradient(180deg, #121212, #070707); padding: 0;">
+            <div style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); padding: 25px; text-align: center; position: relative;">
+                <h3 id="logger-title" style="margin:0; color:#fff; font-size:22px; font-weight:900; letter-spacing:1px;">تسجيل جديد</h3>
+                <p style="margin:5px 0 0; color:rgba(255,255,255,0.7); font-size:12px;">أضف نشاطك اليومي يا بطل 🔥</p>
+                <button onclick="closeLogger()" style="position:absolute; top:20px; left:20px; background:rgba(0,0,0,0.3); border:none; color:#fff; width:30px; height:30px; border-radius:50%; cursor:pointer;">✕</button>
+            </div>
+            
+            <div style="padding: 25px;">
+                <div id="category-menu" class="hidden">
+                    <div id="category-btns" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;"></div>
+                </div>
+                
+                <div id="log-inputs" class="hidden">
+                    <div id="file-wrapper" class="hidden">
+                        <button class="btn-full" onclick="document.getElementById('log-file').click()" style="background:#222; border:1px solid #333; margin-bottom:15px;">📸 التقاط صورة</button>
+                        <input type="file" id="log-file" accept="image/*" capture="environment" class="hidden" onchange="handleImageProcessing(this)">
+                        <img id="img-preview" class="hidden" style="width:100%; border-radius:20px; margin:15px 0; border:2px solid var(--accent);">
+                    </div>
+                    
+                    <div id="log-fields-container">
+                        <!-- Inputs will be rendered here via JS -->
+                    </div>
+                </div>
+                
+                <button class="btn-full" style="background:#222; margin-top:15px; border:1px solid #333; color:#777; font-size:14px;" onclick="closeLogger()">إلغاء وإغلاق</button>
+            </div>
         </div>
     </div>
 
@@ -962,6 +1333,7 @@
                     <div id="prof-bio-strip" style="color:#777; font-size:12px; margin-top:8px;"></div>
                 </div>
                 <div style="display:flex; gap:8px;">
+                    <button id="admin-chat-user-btn" onclick="openAdminChat(); document.getElementById('chat-window').classList.remove('hidden');" style="background:rgba(0,122,255,0.2); border:1px solid #007aff; color:#007aff; padding:8px 15px; border-radius:12px; font-size:12px; display:flex; align-items:center; gap:5px;">💬 شات</button>
                     <button onclick="deleteUser()" style="background:rgba(255,59,48,0.2); border:1px solid #ff3b30; color:#ff3b30; padding:8px 15px; border-radius:12px; font-size:12px; display:flex; align-items:center; gap:5px;">🗑️ حذف</button>
                     <button onclick="document.getElementById('profile-modal').classList.add('hidden')" style="background:#333; border:1px solid #444; color:#fff; padding:8px 15px; border-radius:12px; font-size:12px;">إغلاق</button>
                 </div>
@@ -1012,10 +1384,7 @@
             </div>
 
             <!-- Action Buttons -->
-            <div id="admin-food-prefs-box" class="card hidden" style="background:rgba(76,175,80,0.05); border:1px solid rgba(76,175,80,0.2); border-radius:15px; padding:15px; margin-bottom:20px;">
-                <h4 style="color:#4caf50; margin-bottom:10px; font-size:13px; display:flex; align-items:center; gap:8px;">🥗 ذوق البطل في الأكل:</h4>
-                <div id="admin-food-prefs" style="font-size:12px; color:#ccc; line-height:1.6;"></div>
-            </div>
+
 
             <div id="selected-user-history" class="hidden" style="margin-bottom:20px; max-height:300px; overflow-y:auto; border:1px solid #333; padding:15px; border-radius:15px; background:rgba(0,0,0,0.2);">
                 <div id="target-history-list"></div>
@@ -1074,7 +1443,7 @@
     </div>
 
     <!-- Recipe Detail Modal -->
-    <div id="recipe-detail-modal" class="modal hidden" style="z-index: 10000;">
+    <div id="recipe-detail-modal" class="modal hidden" style="z-index: 10025;">
         <div class="card" style="width:90%; max-width:500px; padding:0; overflow:hidden; background:#0a0a0a; border:1px solid #333;">
             <div id="recipe-detail-img" style="width:100%; height:250px; background-size:cover; background-position:center; position:relative;">
                 <button onclick="document.getElementById('recipe-detail-modal').classList.add('hidden')" style="position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.6); border:none; color:#fff; width:35px; height:35px; border-radius:50%; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center;">✕</button>
@@ -1229,7 +1598,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-    <script src="scripts_bundle.js?v=7.2.2"></script>
+    <!-- SweetAlert2 (Must be before scripts_bundle.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="scripts_bundle.js?v=9.4.1"></script>
 
     <div id="full-screen-viewer" style="position:fixed; top:0; left:0; width:100vw; height:100vh; background:#000; z-index:9999999; display:none; flex-direction:column; align-items:center; justify-content:center; padding:20px; overflow:hidden;">
         <button onclick="closeFullViewer()" style="position:absolute; top:20px; right:20px; background:rgba(255,255,255,0.2); border:none; color:#fff; padding:12px 25px; border-radius:15px; font-weight:bold; z-index:10000000;">إغلاق X</button>
@@ -1250,17 +1621,29 @@
     <!-- Real-time Chat UI -->
     <div id="chat-widget-btn" onclick="toggleChatWindow()" style="position:fixed; bottom:20px; right:20px; width:60px; height:60px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; color:#fff; box-shadow:0 10px 30px var(--primary-glow); z-index:9999; cursor:pointer; transition:0.3s;">💬</div>
     
-    <div id="chat-window" class="hidden" style="position:fixed; bottom:90px; right:20px; width:320px; height:450px; background:#0a0a0a; border:1px solid #333; border-radius:25px; display:flex; flex-direction:column; overflow:hidden; z-index:9999; box-shadow:0 20px 50px rgba(0,0,0,0.8); backdrop-filter:blur(10px);">
-        <div style="background:var(--primary); padding:15px; color:#fff; display:flex; justify-content:space-between; align-items:center;">
-            <b style="font-size:14px;">Chat with Captain 🔥</b>
+    <div id="chat-window" class="hidden" style="position:fixed; bottom:90px; right:20px; width:340px; height:500px; background:#0a0a0a; border:1px solid #333; border-radius:25px; display:flex; flex-direction:column; overflow:hidden; z-index:9999; box-shadow:0 20px 50px rgba(0,0,0,0.8); backdrop-filter:blur(20px);">
+        <div id="chat-header" style="background:var(--primary); padding:15px; color:#fff; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span id="chat-back-btn" class="hidden" onclick="showChatUserList()" style="cursor:pointer; font-size:20px; background:rgba(0,0,0,0.2); width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center;">🔙</span>
+                <b id="chat-title-text" style="font-size:14px;">Chat with Captain 🔥</b>
+            </div>
             <span onclick="toggleChatWindow()" style="cursor:pointer; font-size:18px;">✕</span>
         </div>
-        <div id="chat-messages" style="flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
-            <p style="text-align:center; color:#555; font-size:11px;">بداية الدردشة مع الكابتن 🛡️</p>
+
+        <!-- Admin View: User List -->
+        <div id="chat-admin-list" class="hidden" style="flex:1; overflow-y:auto; background:#080808; padding:10px;">
+            <div style="padding:10px; color:#555; font-size:11px; text-align:center;">جاري تحميل المحادثات... ⏳</div>
         </div>
-        <div style="padding:15px; background:#111; display:flex; gap:10px;">
-            <input type="text" id="chat-input" placeholder="اكتب رسالتك..." style="flex:1; background:#000; border:1px solid #333; color:#fff; padding:10px; border-radius:15px; font-size:13px;">
-            <button onclick="sendChatMessage()" style="background:var(--primary); border:none; color:#fff; padding:10px 15px; border-radius:15px; font-weight:bold;">🚀</button>
+
+        <!-- Chat Messages View -->
+        <div id="chat-messages-view" style="flex:1; display:flex; flex-direction:column; overflow:hidden;">
+            <div id="chat-messages" style="flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+                <p style="text-align:center; color:#555; font-size:11px;">بداية الدردشة مع الكابتن 🛡️</p>
+            </div>
+            <div id="chat-input-area" style="padding:15px; background:#111; display:flex; gap:10px;">
+                <input type="text" id="chat-input" placeholder="اكتب رسالتك..." style="flex:1; background:#000; border:1px solid #333; color:#fff; padding:12px; border-radius:15px; font-size:13px;">
+                <button onclick="sendChatMessage()" style="background:var(--primary); border:none; color:#fff; padding:10px 15px; border-radius:15px; font-weight:bold;">🚀</button>
+            </div>
         </div>
     </div>
 </body>
