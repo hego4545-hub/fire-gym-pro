@@ -1798,3 +1798,132 @@ async function forceUpdate() {
         window.location.reload();
     }
 }
+
+
+// --- CHAT & NOTIFICATIONS SYSTEM (RESTORED) ---
+async function openNotifModal() {
+    const modal = document.getElementById('notif-modal');
+    const listView = document.getElementById('static-notif-list-view');
+    modal.classList.remove('hidden');
+    listView.innerHTML = '<p style="text-align:center; color:#777;">جاري تحميل الرسائل... ⏳</p>';
+
+    try {
+        const userId = auth.currentUser.uid;
+        const q = query(collection(db, "notifications"), where("targetId", "==", userId), orderBy("timestamp", "desc"), limit(20));
+        const querySnapshot = await getDocs(q);
+        
+        listView.innerHTML = '';
+        if (querySnapshot.empty) {
+            listView.innerHTML = '<p style="text-align:center; color:#555; padding:20px;">لا يوجد رسائل جديدة حالياً 📭</p>';
+            return;
+        }
+
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const time = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('ar-EG') : 'الآن';
+            const item = document.createElement('div');
+            item.className = 'card';
+            item.style.margin = '0 0 10px 0';
+            item.style.borderLeft = '4px solid ' + (data.type === 'admin' ? 'var(--primary)' : 'var(--accent)');
+            item.innerHTML = 
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                    <small style="color:#777;"></small>
+                    <b style="color:var(--accent);"></b>
+                </div>
+                <p style="color:#eee; margin:0; line-height:1.4;"></p>
+            ;
+            listView.appendChild(item);
+        });
+
+        // Reset badge
+        document.getElementById('notif-badge').classList.add('hidden');
+        document.getElementById('notif-badge-admin').classList.add('hidden');
+    } catch (e) {
+        console.error("Error loading notifs: ", e);
+        listView.innerHTML = '<p style="text-align:center; color:red;">فشل تحميل الرسائل ❌</p>';
+    }
+}
+
+function closeNotifModal() {
+    document.getElementById('notif-modal').classList.add('hidden');
+}
+
+// Admin Send Notification Function
+async function sendAdminNotif(targetUserId, message, senderName = 'Captain') {
+    try {
+        await addDoc(collection(db, "notifications"), {
+            targetId: targetUserId,
+            message: message,
+            senderName: senderName,
+            timestamp: serverTimestamp(),
+            type: 'admin'
+        });
+        Swal.fire('تم الإرسال', 'تم إرسال الرسالة بنجاح ✅', 'success');
+    } catch (e) {
+        Swal.fire('خطأ', 'فشل إرسال الرسالة ❌', 'error');
+    }
+}
+
+
+// --- REAL-TIME CHAT LOGIC (COMPAT VERSION) ---
+let chatUnsubscribe = null;
+
+function toggleChatWindow() {
+    const win = document.getElementById('chat-window');
+    win.classList.toggle('hidden');
+    if (!win.classList.contains('hidden')) {
+        loadChatMessages();
+        document.getElementById('chat-input').focus();
+    } else {
+        if (chatUnsubscribe) chatUnsubscribe();
+    }
+}
+
+function loadChatMessages() {
+    const userId = firebase.auth().currentUser.uid;
+    const msgContainer = document.getElementById('chat-messages');
+    
+    // Listen for messages between user and admin
+    chatUnsubscribe = firebase.firestore().collection("chats")
+        .where("participants", "array-contains", userId)
+        .orderBy("timestamp", "asc")
+        .onSnapshot((snapshot) => {
+            msgContainer.innerHTML = '';
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const isMe = data.senderId === userId;
+                const msgDiv = document.createElement('div');
+                msgDiv.style.maxWidth = '80%';
+                msgDiv.style.padding = '10px 15px';
+                msgDiv.style.borderRadius = '18px';
+                msgDiv.style.fontSize = '13px';
+                msgDiv.style.alignSelf = isMe ? 'flex-end' : 'flex-start';
+                msgDiv.style.background = isMe ? 'var(--primary)' : '#222';
+                msgDiv.style.color = '#fff';
+                msgDiv.style.marginBottom = '5px';
+                msgDiv.innerText = data.text;
+                msgContainer.appendChild(msgDiv);
+            });
+            msgContainer.scrollTop = msgContainer.scrollHeight;
+        }, (error) => {
+            console.error("Chat sync error:", error);
+        });
+}
+
+function sendChatMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const userId = firebase.auth().currentUser.uid;
+    firebase.firestore().collection("chats").add({
+        text: text,
+        senderId: userId,
+        participants: [userId, 'admin'], 
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        input.value = '';
+    }).catch((e) => {
+        console.error("Chat send error:", e);
+    });
+}
