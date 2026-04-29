@@ -786,7 +786,33 @@ async function fetchAndRenderLogs(phone, containerId, isAdminView = false) {
 }
 
 function loadUserLogs() { fetchAndRenderLogs(currentUser.phone, 'user-history-list'); }
-async function deleteLog(id, phone, containerId) { if (confirm('حذف؟')) { await db.collection('logs').doc(id).delete(); fetchAndRenderLogs(phone || currentUser.phone, containerId || 'user-history-list'); } }
+async function deleteLog(id, phone, containerId) {
+    const result = await Swal.fire({
+        title: 'هل تريد حذف هذا السجل؟ 🗑️',
+        text: "مش هتقدر ترجعه تاني بعد الحذف!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ff3b30',
+        cancelButtonColor: '#444',
+        confirmButtonText: 'أيوه، احذف ✅',
+        cancelButtonText: 'إلغاء ❌',
+        background: '#0a0a0a',
+        color: '#fff'
+    });
+
+    if (result.isConfirmed) {
+        await db.collection('logs').doc(id).delete();
+        fetchAndRenderLogs(phone || currentUser.phone, containerId || 'user-history-list');
+        Swal.fire({
+            title: 'تم الحذف بنجاح!',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false,
+            background: '#0a0a0a',
+            color: '#fff'
+        });
+    }
+}
 
 // --- LOGGING ENGINE (Tracker Grid) ---
 let currentLogType = ""; let currentLogSub = "";
@@ -1672,6 +1698,7 @@ function switchTab(t, el) {
     if (el) el.classList.add('active');
 
     if (t === 'workout-schedule') {
+        lastViewedCat = null; // إعادة تعيين القائمة عند الدخول من القائمة السفلية
         renderUserPlanTabs();
         
         const goal = (currentUser && currentUser.goal) ? currentUser.goal.toLowerCase() : '';
@@ -1689,12 +1716,12 @@ function switchTab(t, el) {
             if (hasWorkout && hasNutrition) {
                 navContainer.style.display = 'flex';
                 switchScheduleView('workout', btnWorkout);
-                if (PLAN_CATS.length > 0) viewCatPlan(PLAN_CATS[0]);
+                // تم حذف التوجيه التلقائي للبنج للسماح للمستخدم بالاختيار
             } else {
                 navContainer.style.display = 'none';
                 if (hasWorkout) {
                     switchScheduleView('workout', btnWorkout);
-                    if (PLAN_CATS.length > 0) viewCatPlan(PLAN_CATS[0]);
+                    // تم حذف التوجيه التلقائي للبنج للسماح للمستخدم بالاختيار
                 } else if (hasNutrition) {
                     switchScheduleView('nutrition', btnNutrition);
                 }
@@ -1758,30 +1785,23 @@ async function updateWater(v) {
     localStorage.setItem('w_count', c);
     if (document.getElementById('water-count')) document.getElementById('water-count').innerText = c;
 
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
+    const userPhone = currentUser.phone.toString().trim();
+    const d = new Date();
+    const dateStr = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+    const dayId = `${userPhone}_${dateStr}_water`;
 
-    const snap = await db.collection('logs')
-        .where('uPhone', '==', currentUser.phone)
-        .where('type', '==', 'مياه')
-        .where('ts', '>=', startOfDay)
-        .get();
-
-    if (!snap.empty) {
-        const docId = snap.docs[0].id;
-        await db.collection('logs').doc(docId).update({
-            val: c + ' كوب',
-            ts: firebase.firestore.FieldValue.serverTimestamp()
-        });
-    } else {
-        await db.collection('logs').add({
-            uPhone: currentUser.phone,
+    try {
+        await db.collection('logs').doc(dayId).set({
+            uPhone: userPhone,
             type: 'مياه',
             val: c + ' كوب',
             ts: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        }, { merge: true });
+        
+        loadUserLogs();
+    } catch (e) {
+        console.error("Error updating water log:", e);
     }
-    loadUserLogs();
 }
 // --- UI LOADERS ---
 

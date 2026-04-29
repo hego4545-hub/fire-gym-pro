@@ -675,10 +675,13 @@
                         <div class="system-pill" id="system-title-badge" style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); color:var(--accent); font-size:10px; padding:6px 18px; border-radius:50px; font-weight:900; backdrop-filter:blur(10px);">🔥 V.9.4.0 ELITE</div>
                     </div>
                     
-                    <h1 class="user-welcome-text">
-                        <span class="fire-icon-main">🔥</span>
-                        <span id="user-welcome-prefix">يا كابتن</span> <span id="user-display-name">...</span>
-                    </h1>
+                    <div style="text-align:center; margin-bottom:15px;">
+                        <span id="user-welcome-prefix" style="color:#777; font-size:14px; font-weight:900; text-transform:uppercase; letter-spacing:2px; display:block; margin-bottom:5px;">يا كابتن</span>
+                        <h1 class="user-welcome-text" style="margin:0; display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;">
+                            <span id="user-display-name" style="color:var(--primary);">...</span>
+                            <span class="fire-icon-main" style="margin:0;">🔥</span>
+                        </h1>
+                    </div>
                     
                     <div class="daily-motivation" id="daily-quote-card" style="max-width:350px; margin:0 auto 25px;">
                         <p id="daily-quote-text">صحتك هي استثمارك الوحيد اللي مش بيخسر 🔋</p>
@@ -746,11 +749,11 @@
 
                 <!-- Premium Macro Modal -->
                 <div id="macro-modal" class="modal hidden" style="z-index: 100000; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); background: rgba(0,0,0,0.85);">
-                    <div class="modal-content" style="max-width:450px; padding:0; overflow:hidden; border-radius:40px; border:1px solid rgba(255,255,255,0.1); background: #080808; box-shadow: 0 40px 100px rgba(0,0,0,0.8);">
+                    <div class="modal-content" style="max-width:450px; width:95%; max-height:90vh; overflow-y:auto; padding:0; border-radius:40px; border:1px solid rgba(255,255,255,0.1); background: #080808; box-shadow: 0 40px 100px rgba(0,0,0,0.8); position:relative;">
                         <div id="macro-input-view">
                             <div style="background: linear-gradient(135deg, #1b5e20, #4caf50); padding:40px 30px; text-align:center; position:relative; overflow:hidden;">
                                 <div style="position:absolute; top:-20px; right:-20px; width:150px; height:150px; background:rgba(255,255,255,0.1); border-radius:50%; filter:blur(40px);"></div>
-                                <span onclick="closeMacroModal()" style="position:absolute; top:20px; right:25px; color:#fff; cursor:pointer; font-size:24px; z-index:10; background:rgba(0,0,0,0.2); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;">✕</span>
+                                <span onclick="closeMacroModal()" style="position:absolute; top:20px; left:20px; color:#fff; cursor:pointer; font-size:24px; z-index:20; background:rgba(0,0,0,0.3); width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px); border:1px solid rgba(255,255,255,0.2);">✕</span>
                                 <div style="font-size:50px; margin-bottom:15px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));">🍎</div>
                                 <h2 style="color:#fff; margin:0; font-size:28px; font-weight:900; letter-spacing:-0.5px;">حاسبة السعرات الذكية</h2>
                                 <p style="color:rgba(255,255,255,0.7); font-size:12px; margin-top:10px; font-weight:bold;">بناءً على معادلة Mifflin-St Jeor العالمية</p>
@@ -797,7 +800,7 @@
                         <!-- Result View -->
                         <div id="macro-result-view" class="hidden">
                             <div style="background: linear-gradient(135deg, #1b5e20, #4caf50); padding:40px 30px; text-align:center; position:relative;">
-                                <span onclick="closeMacroModal()" style="position:absolute; top:20px; right:25px; color:#fff; cursor:pointer; font-size:24px; background:rgba(0,0,0,0.2); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center;">✕</span>
+                                <span onclick="closeMacroModal()" style="position:absolute; top:20px; left:20px; color:#fff; cursor:pointer; font-size:24px; z-index:20; background:rgba(0,0,0,0.3); width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(5px); border:1px solid rgba(255,255,255,0.2);">✕</span>
                                 <h2 style="color:#fff; margin:0; font-size:28px; font-weight:900;">النتائج النهائية 📊</h2>
                                 <p style="color:rgba(255,255,255,0.7); font-size:12px; margin-top:10px;">خطة التغذية المقترحة لك</p>
                             </div>
@@ -902,11 +905,11 @@
                             <div id="expiry-progress-fill" style="width:0%; height:100%; background:var(--primary); transition:0.5s;"></div>
                         </div>
                     </div>
-                    <div style="margin-top:30px; display:flex; flex-direction:column; gap:12px;">
+                    <div style="margin-top:30px; display:flex; flex-direction:column; gap:12px; padding-bottom:50px;">
                         <button onclick="editMyInfo()" class="btn-full" style="background:rgba(255,255,255,0.05); border:1px solid #444; font-size:14px;">✏️ تعديل بياناتي الحيوية</button>
                         <button id="goal-change-btn" onclick="requestGoalChange()" class="btn-full" style="background:rgba(255,179,0,0.1); border:1px solid var(--accent); color:var(--accent); font-size:14px;">🔥 طلب تغيير النظام الحالي</button>
                         
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px; border-top:1px solid #333; pt:20px;">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px; border-top:1px solid #333; padding-top:20px; padding-bottom:100px;">
                             <button onclick="forceUpdate()" style="background:#1a1a1a; color:#fff; border:1px solid #333; padding:15px; border-radius:15px; font-size:12px; font-weight:bold;">🔄 تحديث النظام</button>
                             <button onclick="logout()" style="background:rgba(255,0,0,0.1); color:#ff3b30; border:1px solid #ff3b30; padding:15px; border-radius:15px; font-weight:bold; font-size:12px;">🚶‍♂️ تسجيل خروج</button>
                         </div>
